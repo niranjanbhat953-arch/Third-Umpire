@@ -1,0 +1,21 @@
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# Python byte-code and cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Large caches
+backend/embeddings_cache.joblib
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

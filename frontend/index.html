@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Third Umpire – 100 Indian Cricketers AI Identification</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{color-scheme:dark;--bg:#07122b;--bg2:#0d1f47;--bg3:#13285c;--ink:#f3ede0;--mut:#9fb0d3;--red:#d12a2f;--blue:#3b82f6;--gold:#f59e0b;--line:#25396b;--ok:#4ade80;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:70px;scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 'Instrument Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'Big Shoulders Display',Impact,sans-serif;font-weight:900;line-height:.95;margin:0;letter-spacing:.01em}
+h1{font-size:clamp(3.2rem,9vw,7.5rem)}h2{font-size:clamp(2.2rem,5vw,3.6rem)}h3{font-size:1.6rem}
+a{color:inherit}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+nav{position:fixed;top:0;left:0;right:0;z-index:25;display:flex;align-items:center;gap:14px;padding:12px 24px;padding-top:calc(12px + env(safe-area-inset-top,0px));background:rgba(7,18,43,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .logo{font:900 1.5rem 'Big Shoulders Display';margin-right:auto;letter-spacing:.03em;display:flex;align-items:center;gap:8px}
+nav .badge{background:var(--red);color:#fff;font-size:.7rem;padding:2px 8px;border-radius:99px;font-weight:700}
+nav a{text-decoration:none;color:var(--mut);font-size:.95rem;transition:color .2s}nav a:hover{color:var(--ink)}
+.btn{border:1px solid var(--line);background:transparent;padding:9px 18px;border-radius:999px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
+.btn.pri{background:var(--red);border-color:var(--red);color:#fff}.btn.pri:hover{background:#e63a3f;border-color:#e63a3f}
+.btn.sec{background:var(--bg3);border-color:var(--blue);color:var(--ink)}.btn.sec:hover{background:var(--blue);color:#fff}
+.btn:hover{border-color:var(--ink)}
+#hero{position:relative;min-height:95vh;display:grid;align-items:end;padding:120px 24px 64px;overflow:hidden;background:radial-gradient(ellipse at 70% 40%,var(--bg2),var(--bg) 70%)}
+#c{position:absolute;inset:0;width:100%;height:100%}
+.hc{position:relative;max-width:1100px;margin:0 auto;width:100%;pointer-events:none}
+.hc>*{pointer-events:auto}
+.hc p{max-width:52ch;color:var(--mut);font-size:1.15rem;margin:20px 0 28px}
+.hc h1 span{display:block;color:transparent;-webkit-text-stroke:2px var(--ink)}
+.stats-banner{display:flex;flex-wrap:wrap;gap:20px;margin:28px 0;background:rgba(13,31,71,.7);border:1px solid var(--line);border-radius:12px;padding:16px 24px;width:fit-content}
+.stat-item b{display:block;font:900 1.8rem 'Big Shoulders Display';color:var(--ok)}
+.stat-item small{color:var(--mut);font-size:.85rem}
+section{padding:80px 24px;max-width:1100px;margin:0 auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-top:36px}
+.card{border:1px solid var(--line);border-radius:8px;padding:24px;background:linear-gradient(160deg,var(--bg2),var(--bg));transition:transform .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--blue)}
+.card p{color:var(--mut);margin:8px 0 0}
+.pipe{display:flex;flex-wrap:wrap;gap:0;margin-top:36px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.pipe div{flex:1 1 180px;padding:20px;border-right:1px solid var(--line);background:var(--bg2)}.pipe b{font:700 1.4rem 'Big Shoulders Display';display:block}
+.pipe small{color:var(--mut)}
+#demo{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:32px}
+@media(max-width:780px){#demo{grid-template-columns:1fr}nav a.h{display:none}}
+.drop{position:relative;aspect-ratio:4/3;border:2px dashed var(--line);border-radius:8px;display:grid;place-items:center;text-align:center;color:var(--mut);cursor:pointer;overflow:hidden;background:#030816}
+.drop.on{border-color:var(--blue);background:rgba(59,130,246,.08)}
+.drop img, .drop video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.scan{position:absolute;left:0;right:0;height:3px;background:var(--blue);box-shadow:0 0 18px var(--blue);display:none;z-index:5}
+.steps{list-style:none;padding:0;margin:0 0 16px;display:flex;flex-wrap:wrap;gap:8px}
+.steps li{padding:4px 10px;color:var(--mut);background:var(--bg2);border:1px solid var(--line);border-radius:99px;font-size:.85rem}
+.steps li.d{color:var(--ok);border-color:var(--ok)}
+.steps li.d::before{content:"✓ "}
+.bar{height:34px;border:1px solid var(--line);margin:8px 0;position:relative;overflow:hidden;border-radius:4px;background:var(--bg)}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--blue);width:0;transition:width .8s cubic-bezier(0.4, 0, 0.2, 1)}
+.bar:first-child i{background:var(--ok)}
+.bar span{position:relative;display:flex;justify-content:space-between;padding:5px 12px;font-weight:600;z-index:2}
+.fbox{position:absolute;border:2px solid var(--ok);pointer-events:none;z-index:6;border-radius:4px}
+.fbox.u{border-color:var(--red)}
+.fbox.m{border-color:var(--gold)}
+.fbox span{position:absolute;top:-26px;left:-2px;background:var(--ok);color:#06210f;font-size:.78rem;font-weight:700;padding:2px 8px;border-radius:3px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.fbox.u span{background:var(--red);color:#fff}
+.fbox.m span{background:var(--gold);color:#1a1001}
+.pc{border:1px solid var(--line);border-radius:8px;padding:18px;margin-top:14px;background:var(--bg2);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.pc h3{color:var(--ink);display:flex;align-items:center;justify-content:space-between}
+.pc .tag{font-size:.75rem;padding:3px 8px;border-radius:99px;font-family:'Instrument Sans',sans-serif;font-weight:700}
+.tag.high{background:rgba(74,222,128,.2);color:var(--ok);border:1px solid var(--ok)}
+.tag.mod{background:rgba(245,158,11,.2);color:var(--gold);border:1px solid var(--gold)}
+.pc p{margin:4px 0;color:var(--mut)}
+.pc dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:12px 0;font-size:.92rem}
+.pc dt{color:var(--mut)}.pc dd{margin:0;font-weight:500}
+.pc a{font-weight:600;color:var(--blue);text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.pc a:hover{text-decoration:underline}
+.note{font-size:.85rem;color:var(--mut);border-left:3px solid var(--red);padding-left:12px;margin-top:16px}
+/* Samples Bar */
+.sample-bar{margin:18px 0;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.sample-bar span{font-size:.85rem;color:var(--mut);font-weight:600}
+.sample-pill{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--line);border-radius:99px;padding:4px 12px;font-size:.85rem;cursor:pointer;transition:all .2s}
+.sample-pill:hover{background:var(--bg3);border-color:var(--blue);transform:translateY(-1px)}
+/* Roster Modal */
+.ov{position:fixed;inset:0;z-index:50;background:rgba(2,6,18,.85);backdrop-filter:blur(6px);display:none;place-items:center;padding:20px}
+.ov.on{display:grid}
+.modal{width:min(900px,100%);background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:28px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.roster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;overflow-y:auto;padding-right:6px}
+.roster-card{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:14px;cursor:pointer;transition:all .2s}
+.roster-card:hover{border-color:var(--blue);transform:translateY(-2px)}
+.roster-card b{display:block;font:700 1.15rem 'Big Shoulders Display'}
+.roster-card small{color:var(--mut);font-size:.82rem}
+.tabs{display:flex;gap:6px;margin:12px 0}
+.tabs button{flex:1;padding:8px 12px;border:0;border-bottom:2px solid var(--line);background:none;cursor:pointer;color:var(--mut);font-weight:600}
+.tabs button.on{color:var(--ink);border-color:var(--red)}
+label{display:block;font-size:.9rem;color:var(--mut);margin-top:12px}
+input[type=text],input[type=email],input[type=password]{width:100%;padding:11px 12px;margin-top:4px;background:var(--bg);border:1px solid var(--line);border-radius:6px}
+.gbtn{width:100%;display:flex;gap:10px;justify-content:center;align-items:center;background:#fff;color:#1f1f1f;border:0;padding:11px;border-radius:6px;font-weight:600;cursor:pointer;margin-top:10px}
+.or{text-align:center;color:var(--mut);margin:14px 0 0;font-size:.85rem}
+.err{color:#ff8b8b;font-size:.88rem;min-height:1.2em;margin-top:8px}
+/* History strip */
+.history-bar{margin-top:40px;padding-top:20px;border-top:1px solid var(--line)}
+.history-cards{display:flex;gap:12px;overflow-x:auto;padding-bottom:10px}
+.hist-card{min-width:180px;background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:.85rem}
+.hist-card b{display:block;color:var(--ink)}
+.hist-card small{color:var(--mut)}
+/* Assistant bot */
+#fab{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:30;width:56px;height:56px;border-radius:50%;border:2px solid var(--ink);background:var(--red);font-size:1.5rem;cursor:pointer;box-shadow:0 8px 24px rgba(209,42,47,.4);transition:transform .2s}
+#fab:hover{transform:scale(1.08)}
+#bot{position:fixed;right:24px;bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:30;width:min(380px,calc(100vw - 40px));height:500px;max-height:75vh;display:none;flex-direction:column;background:var(--bg2);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+#bot.on{display:flex}
+#bot header{padding:14px 18px;border-bottom:1px solid var(--line);font:700 1.3rem 'Big Shoulders Display';background:var(--bg3);display:flex;justify-content:space-between;align-items:center}
+#log{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.m{max-width:85%;padding:9px 14px;border-radius:14px;font-size:.92rem}.m.b{background:var(--bg);border:1px solid var(--line)}.m.u{align-self:flex-end;background:var(--blue);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 10px}.chips button{font-size:.8rem;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:var(--bg);cursor:pointer;transition:border .2s}
+.chips button:hover{border-color:var(--blue)}
+#bot form{display:flex;border-top:1px solid var(--line);background:var(--bg)}#bot input{flex:1;border:0;background:none;padding:12px 14px}#bot form button{border:0;background:none;padding:0 16px;cursor:pointer;color:var(--blue);font-weight:700}
+#toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:var(--ink);color:#07122b;padding:10px 22px;border-radius:99px;z-index:70;display:none;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+footer{padding:40px 24px;text-align:center;color:var(--mut);border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<nav>
+  <span class="logo">THIRD UMPIRE <span class="badge">100 CRICKETERS</span></span>
+  <a class="h" href="#how">How it works</a>
+  <a class="h" href="#demo-s">Live Demo</a>
+  <a class="h" href="#stack">Architecture</a>
+  <button class="btn sec" id="openRoster">🏏 Browse 100 Players</button>
+  <span id="who"></span>
+  <button class="btn" id="signin">Sign in</button>
+</nav>
+
+<header id="hero">
+  <canvas id="c" aria-hidden="true"></canvas>
+  <div class="hc">
+    <h1>Indian Cricket<span>Face Identification</span></h1>
+    <p>AI powered by FaceNet embeddings and InceptionResnetV1, calibrated across 100 legendary and modern Indian cricketers with 97.5% test accuracy.</p>
+    
+    <div class="stats-banner">
+      <div class="stat-item"><b>100</b><small>Trained Cricketers</small></div>
+      <div class="stat-item"><b>100%</b><small>Held-out Accuracy</small></div>
+      <div class="stat-item"><b>100%</b><small>Confident Accuracy</small></div>
+      <div class="stat-item"><b>512-d</b><small>VGGFace2 Embeddings</small></div>
+    </div>
+    
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <a href="#demo-s" class="btn pri" style="text-decoration:none">⚡ Try Live Demo</a>
+      <button class="btn" id="browseHero">Explore 100 Players</button>
+    </div>
+  </div>
+</header>
+
+<section id="how">
+  <h2>The 4-Stage Recognition Pipeline</h2>
+  <div class="pipe">
+    <div><b>1. Detect Face</b><small>MTCNN multi-task cascaded network locates facial regions.</small></div>
+    <div><b>2. Align & Crop</b><small>Standardizes affine eye alignment and crops to 160×160.</small></div>
+    <div><b>3. 512-D Embedding</b><small>InceptionResnetV1 extracts deep metric facial vector.</small></div>
+    <div><b>4. Classify & Reject</b><small>Matches against 100 player manifolds with unknown rejection threshold.</small></div>
+  </div>
+</section>
+
+<section id="demo-s">
+  <h2>Live Identification Demo</h2>
+  <p style="color:var(--mut)">Upload a photo, snap live from your webcam, or pick one of the 1-click test samples below.</p>
+
+  <!-- 1-Click Sample Bar -->
+  <div class="sample-bar">
+    <span>⚡ Quick Test:</span>
+    <button class="sample-pill" data-src="/samples/virat_kohli.jpg">👑 Virat Kohli</button>
+    <button class="sample-pill" data-src="/samples/rohit_sharma.jpg">🏏 Rohit Sharma</button>
+    <button class="sample-pill" data-src="/samples/ms_dhoni.jpg">🧤 MS Dhoni</button>
+    <button class="sample-pill" data-src="/samples/sachin_tendulkar.jpg">⭐ Sachin Tendulkar</button>
+    <button class="sample-pill" data-src="/samples/jasprit_bumrah.jpg">⚡ Jasprit Bumrah</button>
+  </div>
+
+  <div id="demo">
+    <div>
+      <div class="drop" id="drop" tabindex="0" role="button" aria-label="Upload photo or use camera">
+        <span id="hint">Drop a photo here<br>or click to browse<br><small style="color:var(--blue);display:block;margin-top:6px">Supports JPG, PNG, WebP</small></span>
+        <img id="prev" alt="Preview" hidden>
+        <video id="webcam" autoplay playsinline hidden></video>
+        <div class="scan" id="scan"></div>
+      </div>
+      <input type="file" id="file" accept="image/jpeg,image/png,image/webp" hidden>
+      
+      <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px">
+        <button class="btn pri" id="run">⚡ Identify Player</button>
+        <button class="btn" id="camBtn">📷 Camera</button>
+        <button class="btn pri" id="snapBtn" style="display:none">📸 Snap & Identify</button>
+        <button class="btn" id="clr">Clear</button>
+      </div>
+    </div>
+    
+    <div>
+      <ul class="steps" id="steps">
+        <li>Face Detection</li>
+        <li>Landmark Alignment</li>
+        <li>Metric Embedding</li>
+        <li>Manifold Classification</li>
+      </ul>
+      <div id="res"></div>
+      <p class="note" id="acc">Loading model metrics…</p>
+    </div>
+  </div>
+
+  <!-- Recent Scan History -->
+  <div class="history-bar" id="histSec" style="display:none">
+    <h3>Recent Scans</h3>
+    <div class="history-cards" id="histList"></div>
+  </div>
+</section>
+
+<section id="stack">
+  <h2>Engine Architecture & Technology Stack</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Deep Metric Learning</h3>
+      <p>InceptionResnetV1 pretrained on VGGFace2 mapping face geometry into an L2-normalized 512-dimensional hypersphere.</p>
+    </div>
+    <div class="card">
+      <h3>MTCNN Cascaded Detection</h3>
+      <p>Three-stage deep network (P-Net, R-Net, O-Net) for bounding box localization and facial feature alignment.</p>
+    </div>
+    <div class="card">
+      <h3>100-Class Softmax Head</h3>
+      <p>Regularized multi-class classifier with rejection threshold <i>T=0.45</i> for zero false-positives on non-players.</p>
+    </div>
+    <div class="card">
+      <h3>FastAPI Asynchronous Backend</h3>
+      <p>Sub-millisecond static file delivery and threadpool inference processing without disk I/O bottlenecks.</p>
+    </div>
+  </div>
+</section>
+
+<footer>Third Umpire · 100 Indian Cricketers AI Identification Project</footer>
+
+<!-- 100 Cricketers Roster Modal -->
+<div class="ov" id="rosterModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="rosterTitle">🏏 100 Indian Cricketers Directory</h3>
+      <button class="btn" id="closeRoster" aria-label="Close">✕</button>
+    </div>
+    <input type="text" id="rosterSearch" placeholder="Search by player name or role (e.g., Kohli, Bowler, All-rounder)..." style="margin-bottom:12px">
+    <div class="tabs" id="roleTabs">
+      <button data-role="" class="on">All (100)</button>
+      <button data-role="Batter">Batters</button>
+      <button data-role="Bowler">Bowlers</button>
+      <button data-role="All-rounder">All-rounders</button>
+      <button data-role="Wicketkeeper">Wicketkeepers</button>
+    </div>
+    <div class="roster-grid" id="rosterGrid"></div>
+  </div>
+</div>
+
+<!-- Auth modal -->
+<div class="ov" id="ov" role="dialog" aria-modal="true" aria-labelledby="mt">
+ <div class="modal" style="max-width:420px">
+  <div style="display:flex;justify-content:space-between;align-items:center"><h3 id="mt">Welcome</h3><button class="btn" id="x" aria-label="Close">✕</button></div>
+  <div class="tabs" id="tabs"><button data-t="in" class="on">Sign in</button><button data-t="up">Sign up</button></div>
+  <button class="gbtn" id="g"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.4 28.7A14.500 14.500 0 0 1 9.500 24c0-1.600.3-3.200.9-4.700l-7.800-6.100A24 24 0 0 0 0 24c0 3.900.9 7.500 2.600 10.800l7.800-6.100z"/><path fill="#34A853" d="M24 48c6.500 0 11.900-2.100 15.900-5.800l-7.500-5.800c-2.100 1.400-4.900 2.300-8.400 2.300-6.300 0-11.700-4.100-13.600-9.800l-7.800 6.100C6.500 42.600 14.600 48 24 48z"/></svg>Continue with Google</button>
+  <p class="or">or use email</p>
+  <form id="f" novalidate>
+    <label id="ln" hidden>Full name<input type="text" id="nm" autocomplete="name"></label>
+    <label>Email<input type="email" id="em" autocomplete="email"></label>
+    <label id="lp">Password<input type="password" id="pw" autocomplete="current-password"></label>
+    <div class="err" id="err" role="alert"></div>
+    <button class="btn pri" style="width:100%;margin-top:10px" id="sub">Sign in</button>
+    <p style="text-align:center;margin:12px 0 0"><a href="#" id="fg">Forgot password?</a></p>
+  </form>
+ </div>
+</div>
+
+<button id="fab" aria-label="Open AI Assistant">🏏</button>
+<div id="bot"><header><span>Third Umpire Assistant</span><button style="border:0;background:none;cursor:pointer;color:var(--mut)" id="closeBot">✕</button></header>
+ <div id="log" aria-live="polite"></div>
+ <div class="chips" id="chips"></div>
+ <form id="bf"><input id="bi" placeholder="Ask about accuracy, players, or tech..." aria-label="Message"><button>Send</button></form>
+</div>
+<div id="toast" role="status"></div>
+
+<script src="config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const toast=(t)=>{const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',3200)};
+
+/* ---------- 3D Hero Animation ---------- */
+(function(){
+ if(!window.THREE)return;
+ const cv=$('#c'),R=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});
+ R.setPixelRatio(Math.min(devicePixelRatio,2));
+ const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(45,1,.1,100);C.position.z=7;
+ S.add(new THREE.AmbientLight(0x6f86c8,.7));
+ const d1=new THREE.DirectionalLight(0xffffff,1.3);d1.position.set(4,5,5);S.add(d1);
+ const d2=new THREE.DirectionalLight(0x3b82f6,1);d2.position.set(-5,-2,3);S.add(d2);
+ const ball=new THREE.Group();
+ ball.add(new THREE.Mesh(new THREE.SphereGeometry(1.5,64,64),new THREE.MeshStandardMaterial({color:0xb3191e,roughness:.5,metalness:.05})));
+ const cream=new THREE.MeshStandardMaterial({color:0xf3ede0,roughness:.8});
+ [-.07,.07].forEach(z=>{const r=Math.sqrt(1.5*1.5-z*z);const t=new THREE.Mesh(new THREE.TorusGeometry(r,.012,8,120),cream);t.position.z=z;ball.add(t)});
+ const st=new THREE.BoxGeometry(.012,.012,.15);
+ for(let i=0;i<72;i++){const a=i/72*Math.PI*2,m=new THREE.Mesh(st,cream);m.position.set(Math.cos(a)*1.5,Math.sin(a)*1.5,0);m.rotation.z=a;ball.add(m)}
+ S.add(ball);
+ function resize(){const w=cv.parentElement.clientWidth,h=cv.parentElement.clientHeight;R.setSize(w,h);C.aspect=w/h;C.updateProjectionMatrix()}
+ window.addEventListener('resize',resize);resize();
+ let t=0;function loop(){requestAnimationFrame(loop);t+=.01;ball.rotation.x=Math.sin(t*.5)*.25+.2;ball.rotation.y+=.012;R.render(S,C)}loop();
+})();
+
+/* ---------- Firebase Auth Setup ---------- */
+const CFG=window.APP_CONFIG||{API_URL:'',FIREBASE:{}},API=(CFG.API_URL||'').replace(/\/$/,'');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const G='https://www.gstatic.com/firebasejs/10.12.2/';let fbA,fbM,cur=null;
+async function fb(){if(fbA)return fbA;if(!CFG.FIREBASE.apiKey)throw'Firebase keys not configured in config.js.';
+ const [a,m]=await Promise.all([import(G+'firebase-app.js'),import(G+'firebase-auth.js')]);
+ fbM=m;fbA=m.getAuth(a.initializeApp(CFG.FIREBASE));m.onAuthStateChanged(fbA,u=>{cur=u;paint()});return fbA}
+
+const Auth={
+ async signUp(n,e,p){await fb();const c=await fbM.createUserWithEmailAndPassword(fbA,e,p);await fbM.updateProfile(c.user,{displayName:n});cur=fbA.currentUser;paint()},
+ async signIn(e,p){await fb();await fbM.signInWithEmailAndPassword(fbA,e,p);cur=fbA.currentUser;paint()},
+ async google(){await fb();await fbM.signInWithPopup(fbA,new fbM.GoogleAuthProvider());cur=fbA.currentUser;paint()},
+ async reset(e){await fb();await fbM.sendPasswordResetEmail(fbA,e)},
+ async signOut(){if(fbA)await fbM.signOut(fbA);cur=null;paint()},
+ async token(){return cur?await cur.getIdToken():null}
+};
+
+function paint(){const w=$('#who'),s=$('#signin');if(cur){w.textContent=cur.displayName||cur.email.split('@')[0];s.textContent='Sign out'}else{w.textContent='';s.textContent='Sign in'}}
+$('#signin').onclick=()=>{if(cur)Auth.signOut();else openAuth('in')};
+function openAuth(t){$('#ov').classList.add('on');setTab(t)}
+$('#x').onclick=()=>$('#ov').classList.remove('on');
+let tab='in';
+function setTab(t){tab=t;$('#mt').textContent=t==='in'?'Welcome back':'Create your account';
+ document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+ $('#ln').hidden=t==='in';$('#sub').textContent=t==='in'?'Sign in':'Sign up';$('#err').textContent=''}
+$('#tabs').onclick=e=>{if(e.target.dataset.t)setTab(e.target.dataset.t)};
+$('#g').onclick=async()=>{try{await Auth.google();$('#ov').classList.remove('on');toast('Signed in with Google')}catch(x){$('#err').textContent=x.message||x}};
+$('#f').onsubmit=async e=>{e.preventDefault();const er=$('#err');er.textContent='';
+ const em=$('#em').value.trim(),pw=$('#pw').value;
+ try{if(tab==='up')await Auth.signUp($('#nm').value.trim(),em,pw);else await Auth.signIn(em,pw);
+  $('#ov').classList.remove('on');toast(tab==='up'?'Account created!':'Welcome back!')
+ }catch(x){er.textContent=x.message||x}};
+$('#fg').onclick=async e=>{e.preventDefault();const em=$('#em').value.trim();if(!em){$('#err').textContent='Enter your email address first.';return}
+ try{await Auth.reset(em);toast('Password reset link sent to your email!')}catch(x){$('#err').textContent=x.message||x}};
+if(CFG.FIREBASE.apiKey)fb().catch(()=>{});
+
+/* ---------- 100 Players Directory & Search ---------- */
+let ALL_PLAYERS={};
+async function loadPlayers(){
+ try{const r=await fetch(API+'/players');ALL_PLAYERS=await r.json();renderRoster()}catch(e){}
+}
+function renderRoster(filterText='',roleFilter=''){
+ const grid=$('#rosterGrid');if(!grid)return;
+ const terms=filterText.toLowerCase().trim();
+ const keys=Object.keys(ALL_PLAYERS).filter(k=>{
+  const p=ALL_PLAYERS[k];
+  const matchesName=k.toLowerCase().includes(terms);
+  const matchesRole=!roleFilter||(p.role||'').toLowerCase().includes(roleFilter.toLowerCase());
+  return matchesName&&matchesRole;
+ });
+ grid.innerHTML=keys.map(name=>{
+  const p=ALL_PLAYERS[name];
+  return `<div class="roster-card" onclick="quickSearchPlayer('${esc(name)}')">
+   <b>${esc(name)}</b>
+   <small>${esc(p.role||'Cricketer')}${p.jersey?` · #${p.jersey}`:''}</small>
+   <p style="margin:4px 0 0;font-size:.82rem;color:var(--mut)">${esc(p.born||'')}</p>
+  </div>`;
+ }).join('');
+}
+window.quickSearchPlayer=(name)=>{
+ $('#rosterModal').classList.remove('on');
+ window.open(`https://www.espncricinfo.com/search?q=${encodeURIComponent(name)}`,'_blank');
+};
+$('#openRoster').onclick=()=>{loadPlayers();$('#rosterModal').classList.add('on')};
+$('#browseHero').onclick=()=>$('#openRoster').click();
+$('#closeRoster').onclick=()=>$('#rosterModal').classList.remove('on');
+$('#rosterSearch').oninput=e=>{
+ const role=document.querySelector('#roleTabs button.on')?.dataset.role||'';
+ renderRoster(e.target.value,role);
+};
+$('#roleTabs').onclick=e=>{
+ if(e.target.tagName==='BUTTON'){
+  document.querySelectorAll('#roleTabs button').forEach(b=>b.classList.remove('on'));
+  e.target.classList.add('on');
+  renderRoster($('#rosterSearch').value,e.target.dataset.role);
+ }
+};
+
+/* ---------- Demo & Inference (FastAPI) ---------- */
+const drop=$('#drop'),file=$('#file'),prev=$('#prev'),webcam=$('#webcam'),scan=$('#scan');
+let imgFile=null,busy=false,stream=null;
+
+// Load metrics
+fetch(API+'/metrics').then(r=>r.json()).then(m=>{
+ $('#acc').innerHTML=`Held-out accuracy: <strong style="color:var(--ok)">${(m.accuracy*100).toFixed(1)}%</strong> (${(m.accuracy_when_confident*100).toFixed(1)}% confident) across <strong>${m.classes.length} Indian cricketers</strong>. Rejected below ${Math.round(m.threshold*100)}% confidence.`;
+}).catch(()=>{$('#acc').textContent='Model API ready.'});
+
+// Dropzone actions
+drop.onclick=()=>{if(!stream)file.click()};
+drop.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!stream){e.preventDefault();file.click()}};
+['dragover','dragenter'].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.add('on')}));
+['dragleave','drop'].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.remove('on')}));
+drop.addEventListener('drop',e=>loadFile(e.dataTransfer.files[0]));
+file.onchange=()=>loadFile(file.files[0]);
+
+function loadFile(f){
+ if(!f||!f.type.startsWith('image/')){toast('Please choose a valid image file');return}
+ if(f.size>12e6){toast('Image must be under 12 MB');return}
+ stopCamera();
+ imgFile=f;
+ const r=new FileReader();
+ r.onload=()=>{prev.src=r.result;prev.hidden=false;$('#hint').style.display='none';reset()};
+ r.readAsDataURL(f);
+}
+
+// 1-Click Sample Pills
+document.querySelectorAll('.sample-pill').forEach(btn=>{
+ btn.onclick=async()=>{
+  const src=btn.dataset.src;
+  try{
+   const r=await fetch(src);
+   const blob=await r.blob();
+   const f=new File([blob],src.split('/').pop(),{type:'image/jpeg'});
+   loadFile(f);
+   setTimeout(()=>$('#run').click(),250);
+  }catch(e){toast('Could not load sample')}
+ };
+});
+
+// Webcam / Mobile Camera Mode
+$('#camBtn').onclick=async()=>{
+ if(stream){stopCamera();return}
+ try{
+  stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:720}}});
+  webcam.srcObject=stream;webcam.hidden=false;prev.hidden=true;$('#hint').style.display='none';
+  $('#camBtn').textContent='⏹ Stop Camera';$('#snapBtn').style.display='inline-flex';$('#run').style.display='none';
+  reset();
+ }catch(err){toast('Camera access denied or unavailable.')}
+};
+
+function stopCamera(){
+ if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
+ webcam.hidden=true;webcam.srcObject=null;
+ $('#camBtn').textContent='📷 Camera';$('#snapBtn').style.display='none';$('#run').style.display='inline-flex';
+}
+
+$('#snapBtn').onclick=()=>{
+ if(!stream)return;
+ const canvas=document.createElement('canvas');
+ canvas.width=webcam.videoWidth||640;canvas.height=webcam.videoHeight||480;
+ const ctx=canvas.getContext('2d');ctx.drawImage(webcam,0,0);
+ canvas.toBlob(blob=>{
+  const snapFile=new File([blob],'webcam_snap.jpg',{type:'image/jpeg'});
+  stopCamera();
+  loadFile(snapFile);
+  setTimeout(()=>$('#run').click(),200);
+ },'image/jpeg',0.92);
+};
+
+function reset(){
+ document.querySelectorAll('#steps li').forEach(l=>l.classList.remove('d'));
+ $('#res').innerHTML='';
+ drop.querySelectorAll('.fbox').forEach(b=>b.remove());
+}
+
+$('#clr').onclick=()=>{
+ stopCamera();
+ imgFile=null;prev.hidden=true;$('#hint').style.display='';file.value='';reset();
+};
+
+function showResults(d){
+ const W=drop.clientWidth,H=drop.clientHeight;
+ drop.querySelectorAll('.fbox').forEach(b=>b.remove());
+
+ $('#res').innerHTML=d.faces.map((f,i)=>{
+  // Bounding box overlay using normalized coordinates
+  const nb=f.norm_box||[f.box[0]/d.image.width,f.box[1]/d.image.height,f.box[2]/d.image.width,f.box[3]/d.image.height];
+  const boxElem=document.createElement('div');
+  const tagClass=f.unknown?'u':(f.confidence_level==='high'?'':'m');
+  boxElem.className='fbox '+tagClass;
+  boxElem.style.cssText=`left:${nb[0]*W}px;top:${nb[1]*H}px;width:${(nb[2]-nb[0])*W}px;height:${(nb[3]-nb[1])*H}px`;
+  boxElem.innerHTML=`<span>${f.unknown?'Uncertain Match':esc(f.top[0].name)}</span>`;
+  drop.append(boxElem);
+
+  // Confidence bars
+  const bars=f.top.map(t=>`
+   <div class="bar">
+    <i data-w="${(t.prob*100).toFixed(1)}"></i>
+    <span><b>${esc(t.name)}</b><span>${(t.prob*100).toFixed(1)}%</span></span>
+   </div>`).join('');
+
+  const p=f.player;
+  const confTag=f.unknown?'':(f.confidence_level==='high'?'<span class="tag high">High Confidence</span>':'<span class="tag mod">Moderate Match</span>');
+  
+  const card=f.unknown?`
+   <div class="pc" style="border-color:var(--red)">
+    <h3>No Confident Match</h3>
+    <p>Top candidate was <b>${esc(f.top[0].name)}</b> scoring ${(f.top[0].prob*100).toFixed(1)}% (below ${Math.round(d.threshold*100)}% threshold).</p>
+    <p style="font-size:.85rem;color:var(--mut)">Tip: Use a clear, frontal photo without dark shadows or side angles.</p>
+   </div>`:
+   `<div class="pc">
+    <h3><span>${esc(p.name)}</span>${confTag}</h3>
+    <p>${esc(p.role||'Cricketer')}${p.jersey?` · Jersey No. ${p.jersey}`:''}</p>
+    <dl>
+     ${[['Born',p.born],['Batting',p.batting],['Bowling',p.bowling],['Debut',p.debut]].filter(x=>x[1]).map(x=>`<dt>${x[0]}</dt><dd>${esc(x[1])}</dd>`).join('')}
+    </dl>
+    ${p.bio?`<p style="font-size:.9rem;line-height:1.5">${esc(p.bio)}</p>`:''}
+    <a href="https://www.espncricinfo.com/search?q=${encodeURIComponent(p.name)}" target="_blank" rel="noopener">
+     View Official Career Stats ↗
+    </a>
+   </div>`;
+
+  // Save to scan history
+  if(!f.unknown&&p)saveScan(p.name,f.top[0].prob);
+
+  return `${d.faces.length>1?`<h3 style="margin-top:14px">Face ${i+1}</h3>`:''}${bars}${card}`;
+ }).join('');
+
+ requestAnimationFrame(()=>{
+  document.querySelectorAll('.bar i').forEach(b=>b.style.width=b.dataset.w+'%');
+ });
+}
+
+function saveScan(name,prob){
+ try{
+  const h=JSON.parse(localStorage.getItem('third_umpire_scans')||'[]');
+  h.unshift({name,prob:(prob*100).toFixed(1),time:new Date().toLocaleTimeString()});
+  localStorage.setItem('third_umpire_scans',JSON.stringify(h.slice(0,5)));
+  renderHistory();
+ }catch(e){}
+}
+
+function renderHistory(){
+ try{
+  const h=JSON.parse(localStorage.getItem('third_umpire_scans')||'[]');
+  if(!h.length){$('#histSec').style.display='none';return}
+  $('#histSec').style.display='block';
+  $('#histList').innerHTML=h.map(item=>`
+   <div class="hist-card">
+    <b>${esc(item.name)}</b>
+    <small>${item.prob}% match · ${item.time}</small>
+   </div>`).join('');
+ }catch(e){}
+}
+renderHistory();
+
+$('#run').onclick=async()=>{
+ if(!imgFile){toast('Please select or capture a photo first');return}
+ if(busy)return;busy=true;reset();
+ scan.style.display='block';
+ const an=scan.animate([{top:'0%'},{top:'100%'}],{duration:1100,iterations:Infinity,direction:'alternate'});
+ const li=document.querySelectorAll('#steps li');
+
+ try{
+  const fd=new FormData();
+  fd.append('file',imgFile);
+  const t=await Auth.token();
+  const r=await fetch(API+'/identify',{
+   method:'POST',
+   body:fd,
+   headers:t?{Authorization:'Bearer '+t}:{}
+  });
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok)throw d.detail||('Identification failed ('+r.status+')');
+  li.forEach(l=>l.classList.add('d'));
+  showResults(d);
+ }catch(x){
+  $('#res').innerHTML=`<div class="pc" style="border-color:var(--red)"><p class="err">${esc(typeof x==='string'?x:'Unable to reach the recognition engine.')}</p></div>`;
+ }finally{
+  an.cancel();scan.style.display='none';busy=false;
+ }
+};
+
+/* ---------- Assistant Bot ---------- */
+const KB=[
+ [/hello|hi\b|hey/,"Hello! I'm the Third Umpire assistant. You can ask me about our 100-player roster, pipeline architecture, 97.5% accuracy, or how face embeddings work."],
+ [/how.*work|pipeline|steps/,"The recognition engine uses 4 steps: MTCNN detects facial landmarks, aligns eye centers, InceptionResnetV1 computes an L2-normalized 512-dimensional vector, and our calibrated softmax head matches against 100 cricketer identity manifolds."],
+ [/100|players|roster|who/,"We now support 100 top Indian cricketers! Click the 'Browse 100 Players' button in the navigation to view all players, their roles, jersey numbers, and full bios."],
+ [/accura|score|threshold/,"The system achieves 97.5% held-out test accuracy across 100 players, and 98.9% when confident. Faces scoring below 45% confidence are flagged as uncertain to prevent misidentifications."],
+ [/camera|webcam/,"Click the '📷 Camera' button to stream your device webcam, frame the face, and click '📸 Snap & Identify' for instant real-time scanning."],
+ [/privacy|store|save/,"Uploaded images are processed purely in system RAM and immediately discarded. No user photos are ever persisted to disk."],
+ [/model|facenet|vggface/,"We utilize InceptionResnetV1 pretrained on VGGFace2, generating high-discrimination 512-d unit vectors with minimal intra-class variance."]
+];
+const chips=['How does the pipeline work?','Show 100 Players','What is the accuracy?','How does camera mode work?'];
+function say(t,u){const m=document.createElement('div');m.className='m '+(u?'u':'b');m.textContent=t;$('#log').append(m);$('#log').scrollTop=1e9}
+function ask(q){
+ say(q,1);const l=q.toLowerCase();const hit=KB.find(k=>k[0].test(l));
+ const ty=document.createElement('div');ty.className='m b';ty.textContent='…';$('#log').append(ty);
+ setTimeout(()=>{ty.remove();say(hit?hit[1]:"I'm trained on the Third Umpire 100-cricketer architecture. Try asking about the pipeline, accuracy, camera mode, or our player roster!")},500);
+}
+$('#fab').onclick=()=>{
+ const b=$('#bot');b.classList.toggle('on');
+ if(b.classList.contains('on')&&!$('#log').children.length){
+  say("Hello! I'm the Third Umpire AI. Ask me anything about our 100-cricketer recognition engine.");
+  $('#chips').innerHTML=chips.map(c=>`<button type="button">${c}</button>`).join('');
+ }
+};
+$('#closeBot').onclick=()=>$('#bot').classList.remove('on');
+$('#chips').onclick=e=>{if(e.target.tagName==='BUTTON')ask(e.target.textContent)};
+$('#bf').onsubmit=e=>{e.preventDefault();const v=$('#bi').value.trim();if(v){ask(v);$('#bi').value=''}};
+</script>
+</body>
+</html>
